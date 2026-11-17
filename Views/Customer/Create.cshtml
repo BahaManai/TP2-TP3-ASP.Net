@@ -1,0 +1,47 @@
+@model Customer
+@{
+    ViewData["Title"] = "Ajouter un client";
+}
+
+<div class="page-header">
+    <h1>Ajouter un client</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">Retour à la liste</a>
+</div>
+
+<div class="card content-card form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (ViewBag.Errors is IEnumerable<string> errors)
+        {
+            <ul class="text-danger">
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        }
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="MembershipTypeId" class="form-label">Type d'abonnement</label>
+            <select asp-for="MembershipTypeId" asp-items="ViewBag.Memberships" class="form-select">
+                <option value="">Sélectionner un abonnement</option>
+            </select>
+            <span asp-validation-for="MembershipTypeId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Créer</button>
+        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

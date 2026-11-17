@@ -1,0 +1,142 @@
+@model MovieDetailsViewModel
+@{
+    ViewData["Title"] = "Détails du film";
+}
+
+<div class="page-header">
+    <h1>@Model.Movie.Name</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">Retour à la liste</a>
+</div>
+
+@if (ViewBag.RentError is string rentError)
+{
+    <div class="alert alert-danger">@rentError</div>
+}
+@if (ViewBag.ReviewError is string reviewError)
+{
+    <div class="alert alert-danger">@reviewError</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card content-card h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Informations</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Genre</dt>
+                    <dd class="col-sm-8">@Model.Movie.Genre?.Name</dd>
+                    <dt class="col-sm-4">Disponibilité</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Movie.IsAvailable)
+                        {
+                            <span class="badge text-bg-success">Disponible</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-secondary">Loué</span>
+                        }
+                    </dd>
+                    <dt class="col-sm-4">Note moyenne</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.AverageRating.ToString("0.0") / 5</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        @if (Model.Movie.IsAvailable)
+        {
+            <div class="card content-card">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">Location</h2>
+                    <form asp-action="Rent" method="post">
+                        <input type="hidden" name="id" value="@Model.Movie.Id" />
+                        <div class="mb-3">
+                            <label for="customerId" class="form-label">Client</label>
+                            <select id="customerId" name="customerId" asp-items="ViewBag.Customers" class="form-select" required>
+                                <option value="">Sélectionner un client</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Louer</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <h2 class="h4 mt-2">Avis</h2>
+        @if (!Model.Reviews.Any())
+        {
+            <div class="alert alert-light border">Aucun avis pour ce film.</div>
+        }
+        else
+        {
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-card p-3 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <strong>@review.Rating / 5</strong>
+                        @if (review.Spoiler)
+                        {
+                            <span class="badge text-bg-warning">Spoiler</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(review.Language))
+                        {
+                            <span class="badge text-bg-secondary">@review.Language</span>
+                        }
+                    </div>
+                    <p class="mb-2">@review.Comment</p>
+                    @if (review.Tags.Any())
+                    {
+                        <div class="mb-2">
+                            @foreach (var tag in review.Tags)
+                            {
+                                <span class="badge rounded-pill text-bg-light border me-1">@tag</span>
+                            }
+                        </div>
+                    }
+                    <small class="text-secondary">@review.CreatedAt.ToLocalTime()</small>
+                </div>
+            }
+        }
+    </div>
+    <div class="col-lg-5">
+        <div class="card content-card">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Donner un avis</h2>
+                <form asp-action="AddReview" method="post">
+                    <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Note</label>
+                        <input id="rating" name="rating" type="number" min="1" max="5" value="5" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Commentaire</label>
+                        <textarea id="comment" name="comment" class="form-control" maxlength="500" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags (séparés par des virgules)</label>
+                        <input id="tags" name="tags" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Langue</label>
+                        <input id="language" name="language" class="form-control" />
+                    </div>
+                    <div class="form-check mb-3">
+                        <input id="spoiler" name="spoiler" type="checkbox" value="true" class="form-check-input" />
+                        <label for="spoiler" class="form-check-label">Contient des spoilers</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publier l'avis</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Movie.Id" class="btn btn-outline-primary">Modifier</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</div>

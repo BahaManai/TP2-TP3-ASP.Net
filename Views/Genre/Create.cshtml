@@ -1,0 +1,26 @@
+@model Genre
+@{
+    ViewData["Title"] = "Ajouter un genre";
+}
+
+<div class="page-header">
+    <h1>Ajouter un genre</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">Retour à la liste</a>
+</div>
+
+<div class="card content-card form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Créer</button>
+        <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

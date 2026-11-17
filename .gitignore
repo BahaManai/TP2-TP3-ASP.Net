@@ -1,0 +1,31 @@
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+artifacts/
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# ASP.NET generated files
+*.publishsettings
+*.pubxml
+*.pubxml.user
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Windows
+Thumbs.db
+Desktop.ini
